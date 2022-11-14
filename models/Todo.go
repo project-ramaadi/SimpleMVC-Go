@@ -3,21 +3,18 @@ package models
 import "errors"
 
 type Todo struct {
-	ID    int    `json:"id"`
+	ID    string `json:"id"`
 	Title string `json:"title"`
 	Done  bool   `json:"done"`
 }
 
-var todos = []Todo{
-	{ID: 1, Title: "Task 1", Done: false},
-	{ID: 2, Title: "Task 2", Done: true},
-}
+var todos []Todo
 
 func GetTodos() []Todo {
 	return todos
 }
 
-func GetTodoById(id int) (*Todo, error) {
+func GetTodoById(id string) (*Todo, error) {
 	for i, todo := range todos {
 		if todo.ID == id {
 			return &todos[i], nil
@@ -32,7 +29,7 @@ func CreateNewTodo(todo Todo) Todo {
 	return todo
 }
 
-func UpdateTodoById(id int, newTitle string) (*Todo, error) {
+func UpdateTodoTitleById(id string, newTitle string) (*Todo, error) {
 	todo, err := GetTodoById(id)
 	if err != nil {
 		return nil, err
@@ -41,7 +38,16 @@ func UpdateTodoById(id int, newTitle string) (*Todo, error) {
 	return todo, nil
 }
 
-func DeleteTodoById(id int) error {
+func MarkTodoAsDoneById(id string, done bool) (*Todo, error) {
+	todo, err := GetTodoById(id)
+	if err != nil {
+		return nil, err
+	}
+	todo.Done = done
+	return todo, nil
+}
+
+func DeleteTodoById(id string) error {
 	for i, todo := range todos {
 		if todo.ID == id {
 			todos = append(todos[:i], todos[i+1:]...)
